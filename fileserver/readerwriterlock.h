@@ -11,18 +11,17 @@ class ReaderWriterLock
 {
 
 protected:
-    QSemaphore mutexReaders;
-    QSemaphore mutexWriters;
+    QSemaphore mutex;
+    QSemaphore fifo;
     QSemaphore writer;
-   // QWaitCondition isReading;
+    //QWaitCondition isFree, isFull;
     int nbReaders;
 
 public:
     ReaderWriterLock():
-        mutexReaders(1),
-        mutexWriters(1),
+        mutex(1),
+        fifo(1),
         writer(1),
-       // isReading(false),
         nbReaders(0){}
 
     /**

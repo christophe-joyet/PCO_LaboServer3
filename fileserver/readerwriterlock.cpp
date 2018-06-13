@@ -1,29 +1,32 @@
 #include "readerwriterlock.h"
 
 void ReaderWriterLock::lockReading() {
-    mutexReaders.acquire();
+    fifo.acquire();
+    mutex.acquire();
     nbReaders++;
-    while (nbReaders==1) {
-      writer.acquire();
+    if (nbReaders==1) {
+       //isFree.wait(&mutexReaders);
+       writer.acquire();
     }
-    mutexReaders.release();
+    mutex.release();
+    fifo.release();
 }
 
 void ReaderWriterLock::unlockReading() {
-    mutexReaders.acquire();
-     nbReaders--;
-     if (nbReaders==0) {
-       writer.release();
-     }
-     mutexReaders.release();
+    mutex.acquire();
+    nbReaders -= 1;
+    if (nbReaders==0) {
+        writer.release();
+    }
+    mutex.release();
 }
 
 void ReaderWriterLock::lockWriting() {
-    mutexWriters.acquire();
-      writer.acquire();
+    fifo.acquire();
+    writer.acquire();
 }
 
 void ReaderWriterLock::unlockWriting() {
     writer.release();
-      mutexWriters.release();
+    fifo.release();
 }
