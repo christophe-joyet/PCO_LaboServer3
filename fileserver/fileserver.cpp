@@ -71,7 +71,7 @@ FileServer::FileServer(quint16 port, bool debug, QObject *parent) :
     responses = new BufferN<Response>(100);
 
     // reqDispatcher = new... TODO
-    reqDispatcher = new RequestDispatcherThread(requests, responses, hasDebugLog);
+    reqDispatcher = new RequestDispatcherThread(requests, responses, hasDebugLog,1,5);
     reqDispatcher->start();
 
     respDispatcher = new ResponseDispatcherThread(responses, hasDebugLog);

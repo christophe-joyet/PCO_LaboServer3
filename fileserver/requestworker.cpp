@@ -9,19 +9,17 @@ RequestWorker::~RequestWorker(){
 
 void RequestWorker::run(){
 
-    ReaderWriterCache rwc(1,5); //le cache
-
     //vérification que la reponse n'est pas dans le cache
-    if(rwc.tryGetCachedResponse(this->request).hasValue()){
+    if(cache->tryGetCachedResponse(this->request).hasValue()){
         //si la réponse est dans le cache, on la met directement dans le dispatcher de réponse
-        this->responses->put(rwc.tryGetCachedResponse(this->request).value());
+        this->responses->put(cache->tryGetCachedResponse(this->request).value());
     } else{
         //sinon on appelle la fonction handle
         RequestHandler rh(this->request, this->hasDebugLog);
         Response response = rh.handle();
         this->responses->put(response);
         //On met la réponse dans le cache pour une utilisation future
-        rwc.putResponse(response);
+        cache->putResponse(response);
     }
 
 

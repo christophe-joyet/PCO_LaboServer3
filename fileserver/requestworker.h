@@ -5,11 +5,12 @@
 #include "abstractbuffer.h"
 #include "request.h"
 #include "response.h"
+#include "readerwritercache.h"
 
 class RequestWorker : public QThread
 {
 public:
-    RequestWorker(AbstractBuffer<Response>* responses, Request request, bool hasDebugLog): responses(responses), request(request), hasDebugLog(hasDebugLog) {}
+    RequestWorker(AbstractBuffer<Response>* responses, Request request, bool hasDebugLog, ReaderWriterCache* cache): responses(responses), request(request), hasDebugLog(hasDebugLog), cache(cache) {}
     ~RequestWorker();
 
 protected:
@@ -18,8 +19,10 @@ protected:
 private:
 
     AbstractBuffer<Response>* responses;
+    ReaderWriterCache* cache;
     Request request;
     bool hasDebugLog;
+
 };
 
 #endif // REQUESTWORKER_H

@@ -13,7 +13,7 @@ void RequestDispatcherThread::run()
         Request req = requests->get();   // block until a request is available
 
         // Création d'un worker threadé qui va s'occuper de gérer les requête
-        RequestWorker* rw = new RequestWorker(responses,req,hasDebugLog);
+        RequestWorker* rw = new RequestWorker(responses,req,hasDebugLog, cache);
 
         // On ajoute le request worker à la liste des request worker en cours
         // d'execution pour pouvoir les delete une fois terminé.
