@@ -81,7 +81,7 @@ public slots:
 private:
     QWebSocketServer *websocketServer;
     QMap<QString, QWebSocket *> clients;
-    RequestDispatcherThread* reqDispatcher; // TODO
+    RequestDispatcherThread* reqDispatcher;
     ResponseDispatcherThread* respDispatcher;
     AbstractBuffer<Request>* requests;
     AbstractBuffer<Response>* responses;

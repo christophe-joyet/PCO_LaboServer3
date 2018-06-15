@@ -1,11 +1,11 @@
 #include "readerwriterlock.h"
 
+//Sémantique reprise du cours lecteur - redacteur priorité égale
 void ReaderWriterLock::lockReading() {
     fifo.acquire();
     mutex.acquire();
     nbReaders++;
-    while (nbReaders==1){
-        //isCacheFree.wait(&mutex); // on attend qu'il n'y ait plus de lecteurs
+    if (nbReaders==1){
         writer.acquire();
     }
     mutex.release();
@@ -22,11 +22,19 @@ void ReaderWriterLock::unlockReading() {
 }
 
 void ReaderWriterLock::lockWriting() {
+    mutex.acquire();
+
     fifo.acquire();
     writer.acquire();
+
+    mutex.release();
 }
 
 void ReaderWriterLock::unlockWriting() {
+    mutex.acquire();
+
     writer.release();
     fifo.release();
+
+    mutex.release();
 }

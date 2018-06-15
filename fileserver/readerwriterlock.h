@@ -10,10 +10,11 @@ class ReaderWriterLock
 {
 
 protected:
-    QSemaphore mutex;
+    QSemaphore mutex; //pour garantir l'exclusion mutuelle
     QSemaphore fifo;
     QSemaphore writer;
-    QWaitCondition isCacheFree;
+    bool isCacheFree;
+    QWaitCondition cond;
     int nbReaders;
 
 public:
