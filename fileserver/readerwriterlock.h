@@ -4,8 +4,7 @@
 #include <QSemaphore>
 #include <QWaitCondition>
 
-//Nous sommes partis sur une implémentation de priorité au lecteur en reprenant
-//la structure du cours
+//Nous sommes partis sur une implémentation de priorité égale comme vu dans le cours
 
 class ReaderWriterLock
 {
@@ -14,7 +13,7 @@ protected:
     QSemaphore mutex;
     QSemaphore fifo;
     QSemaphore writer;
-    //QWaitCondition isFree, isFull;
+    QWaitCondition isCacheFree;
     int nbReaders;
 
 public:

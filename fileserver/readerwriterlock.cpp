@@ -4,9 +4,9 @@ void ReaderWriterLock::lockReading() {
     fifo.acquire();
     mutex.acquire();
     nbReaders++;
-    if (nbReaders==1) {
-       //isFree.wait(&mutexReaders);
-       writer.acquire();
+    while (nbReaders==1){
+        //isCacheFree.wait(&mutex); // on attend qu'il n'y ait plus de lecteurs
+        writer.acquire();
     }
     mutex.release();
     fifo.release();
