@@ -35,7 +35,9 @@ private:
                 for(auto it = cache->map.begin(); it != cache->map.end();){
                     //Si le temps courant est > ou = au temps enregistré + le delay accordé
                     if(QDateTime::currentMSecsSinceEpoch()/1000 >= it->timestamp + cache->staleDelaySec){
+                        cache->lock.lockReading(); //on bloque l'accès aux lecteurs
                         it = cache->map.erase(it); //erase retourne le prochain iterateur
+                        cache->lock.unlockReading();//on libère l'accès aux lecteurs
                     }else {
                         ++it;
                     }
