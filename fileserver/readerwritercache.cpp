@@ -1,4 +1,4 @@
-    #include "readerwritercache.h"
+#include "readerwritercache.h"
 #include "option.h"
 #include <QDateTime>
 #include <QList>
@@ -7,6 +7,7 @@
 ReaderWriterCache::ReaderWriterCache(int invalidationDelaySec, int staleDelaySec):
     invalidationDelaySec(invalidationDelaySec), staleDelaySec(staleDelaySec)
 {
+    //Création d'un nouveau timer pour le cache
     timer = new InvalidationTimer(this);
     timer->start();
 }
@@ -15,7 +16,7 @@ ReaderWriterCache::~ReaderWriterCache()
 {
     notEnd = false; //arrête la boucle while
     timer->wait();  //attendre la fin du thread timer
-    delete timer;
+    delete timer;   //suppression du pointeur
 }
 
 void ReaderWriterCache::putResponse(Response &response)
@@ -24,7 +25,7 @@ void ReaderWriterCache::putResponse(Response &response)
     TimestampedResponse timeStamped = {response, QDateTime::currentMSecsSinceEpoch()/1000};
     lock.lockReading(); //blocage de la lecture du cache
     //Insertion de la réponse dans la cache
-    map.insert(response.getRequest().getFilePath(), timeStamped);
+    map.insert(response.getRequest().getFilePath(), timeStamped); //insertion d'une réponse dans le cache
     lock.unlockReading();//libération de la lecture du cache
 }
 

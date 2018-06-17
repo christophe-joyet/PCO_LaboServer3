@@ -50,14 +50,34 @@ private:
     int invalidationDelaySec; //definit l'intervalle entre deux verifications
     int staleDelaySec; // temps après lequel une donnée est considérée comme obsolète
 	InvalidationTimer* timer;
-	ReaderWriterLock lock;
+    ReaderWriterLock lock;
     bool notEnd = true;
 
 public:
+
+    /**
+     * @brief ReaderWriterCache : Constructeur
+     * @param invalidationDelaySec : definit l'intervalle entre deux verifications
+     * @param staleDelaySec : temps après lequel une donnée est considérée comme obsolète
+     */
 	ReaderWriterCache(int invalidationDelaySec, int staleDelaySec);
+
+    /**
+      * @brief ~ReaderWriterCache : Destructeur
+      */
     ~ReaderWriterCache();
 
+    /**
+     * @brief tryGetCachedResponse : Permet de regarder si une réponse est déjà dans le cache
+     * @param request
+     * @return S'il y a une réponse de disponible alors retourne cette réponse
+     */
 	Option<Response> tryGetCachedResponse(Request& request);
+
+    /**
+     * @brief putResponse : Permet de mettre une réponse dans le cache
+     * @param response
+     */
 	void putResponse(Response& response);
 };
 

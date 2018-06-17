@@ -62,15 +62,15 @@ FileServer::FileServer(quint16 port, bool debug, QObject *parent) :
                                             QWebSocketServer::NonSecureMode, this)),
     hasDebugLog(debug)
 {
-    // requests = new... TODO
+    // requests
 
     requests = new BufferN<Request>(100);
 
-    // responses = new... TODO
+    // responses
 
     responses = new BufferN<Response>(100);
 
-    // reqDispatcher = new... TODO
+    // reqDispatcher
     reqDispatcher = new RequestDispatcherThread(requests, responses, hasDebugLog,1,5);
     reqDispatcher->start();
 
