@@ -1,92 +1,50 @@
-/*#include "readerwriterlock.h"
-
-//Sémantique reprise du cours lecteur - redacteur priorité égale
-void ReaderWriterLock::lockReading() {
-    fifo.acquire();
-    mutex.acquire();
-    nbReaders++;
-    if (nbReaders==1){
-        writer.acquire();
-    }
-    mutex.release();
-    fifo.release();
-}
-
-void ReaderWriterLock::unlockReading() {
-    mutex.acquire();
-    nbReaders -= 1;
-    if (nbReaders==0) {
-        writer.release();
-    }
-    mutex.release();
-}
-
-void ReaderWriterLock::lockWriting() {
-    mutex.acquire();
-
-    fifo.acquire();
-    writer.acquire();
-
-    mutex.release();
-}
-
-void ReaderWriterLock::unlockWriting() {
-    mutex.acquire();
-
-    writer.release();
-    fifo.release();
-
-    mutex.release();
-}*/
-
 //Mesa
 #include "readerwriterlock.h"
 
 //Sémantique reprise du cours lecteur - redacteur priorité égale
 void ReaderWriterLock::lockReading() {
-    //fifo.acquire();
-    mutex.lock();
-    //nbReaders++;
 
+    mutex.lock();
+
+    // On attend qu'aucun rédacteur soit en train d'écrire dans la cache.
     while(nbWriters != 0){
         waitNoWriters.wait(&mutex);
     }
-    //writers.lock();
+
+    // On incrémente le nombre de lecteur
     nbReaders++;
 
-    /*if (nbReaders==1){
-        writer.acquire();
-    }*/
     mutex.unlock();
 }
 
 void ReaderWriterLock::unlockReading() {
     mutex.lock();
+    // On décrémente le nombre de lecteur
     nbReaders--;
-    // On réveil tous les rédacteur, au cas où il n'y
-    // aurait plus de rédacteur.
+
+    // On réveil les potentiels rédacteurs en attente
     waitNoReaders.wakeAll();
-    /*if (nbReaders==0) {
-        writer.release();
-    }*/
+
     mutex.unlock();
 }
 
 void ReaderWriterLock::lockWriting() {
     mutex.lock();
 
+    // On attend qu'aucun lecteur ou rédacteur échange avec la cache.
     while (nbWriters != 0 || nbReaders != 0) {
+        // S'il y a au moins un rédacteur, on attend qu'il aie terminé.
         if(nbWriters != 0)
             waitNoWriters.wait(&mutex);
 
+        // S'il y a au moins un lecteur, on attend qu'il aie terminé.
         if(nbReaders != 0)
             waitNoReaders.wait(&mutex);
     }
 
+    // Une fois qu'il ne reste plus aucun rédacteur ni lecteur, on incrémente
+    // le nombre de rédacteur.
     nbWriters++;
-
-    /*fifo.acquire();
-    writer.acquire();*/
 
     mutex.unlock();
 }
@@ -94,11 +52,11 @@ void ReaderWriterLock::lockWriting() {
 void ReaderWriterLock::unlockWriting() {
     mutex.lock();
 
-
+    // On décrémente le nombre de rédacteur
     nbWriters--;
+
+    // On réveil les potentiels rédacteur et lecteur en attente
     waitNoWriters.wakeAll();
-    /*writer.release();
-    fifo.release();*/
 
     mutex.unlock();
 }
